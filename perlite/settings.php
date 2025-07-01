@@ -7,21 +7,21 @@
  */
 
  
-$rootDir = "Demo";
-$hideFolders = "docs,trash";
+$rootDir = "Whendeez";
+$hideFolders = "docs,trash,excalidraw,Images,Maps,Templates,images";
 $hiddenFileAccess = false;
 $relPathes = false;
-$uriPath = "/";
-$siteTitle = "Perlite";
-$siteType = "article";
-$siteImage = "https://raw.githubusercontent.com/secure-77/Perlite/main/screenshots/screenshot.png";
-$siteURL = "https://perlite.secure77.de";
-$siteLogo = "perlite.svg";  // empty for no logo/customSection
-$siteDescription = "A web based markdown viewer optimized for Obsidian Notes";
-$siteName = "Perlite Demo";
-$siteHomepage = "";  // empty for $siteURL
-$siteGithub = "https://github.com/secure-77";  // empty for no Github
-$siteTwitter = "@secure_sec77";
+$uriPath = "/newteam/";
+$siteTitle = "Whendeez CS2 Team";
+$siteType = "Note Sharing/Blog";
+$siteImage = "https://static.wikia.nocookie.net/logopedia/images/4/49/Counter-Strike_2_%28Icon%29.png/revision/latest?cb=20230330015359";
+$siteURL = "https://herrerashub.com/newteam/";
+$siteLogo = "team_photo.JPG";  // empty for no logo/customSection
+$siteDescription = "A website meant to share notes and strategies for the Whendeez team";
+$siteName = "Whendeeeeeeezy";
+$siteHomepage = "Welcome";  // empty for $siteURL
+$siteGithub = "";  // empty for no Github
+$siteTwitter = "";
 
 $tempPath = "";  // blanc so it gets it automatically
 
@@ -33,11 +33,11 @@ $disablePopHovers = "false";
 $showTOC = "true";
 $showLocalGraph = "true";
 
-$index = "README";
+$index = "Welcome";
 
 $font_size = "15";
 
-$htmlSafeMode = true;
+$htmlSafeMode = false;
 
 
 ?>

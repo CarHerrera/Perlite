@@ -11,7 +11,7 @@
 
 // define perlite location on webserver
 //var uriPath = '/perlite/'
-var uriPath = '/'
+var uriPath = '/newteam/'
 
 
 // define home file

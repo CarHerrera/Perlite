@@ -1,7 +1,7 @@
 <?php
 
 /*!
- * Perlite v1.6.0 (https://github.com/secure-77/Perlite)
+ * Perlite v1.5.8 (https://github.com/secure-77/Perlite)
  * Author: sec77 (https://secure77.de)
  * Licensed under MIT (https://github.com/secure-77/Perlite/blob/main/LICENSE)
  */
@@ -13,10 +13,6 @@ use Parsedown;
 class PerliteParsedown extends Parsedown
 {
 
-    public function __construct()
-    {
-        $this->BlockTypes['!'] = array('YouTube');
-    }
 
     function text($text)
     {
@@ -84,18 +80,19 @@ class PerliteParsedown extends Parsedown
                 <div class="metadata-content">
                 <div class="metadata-properties">
             ';
-
+            // <script>console.log('. implode(" ",) .')</script>
             # Parse Aliase if they are there
             if (array_key_exists("aliases", $parsed)) {
                 $yamlText .= '
                 <div class="metadata-property" tabindex="0" data-property-key="tags" data-property-type="multitext">
+                
                 <div class="metadata-property-key">
                         <span class="metadata-property-icon" aria-disabled="false">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-forward">
-                            <polyline points="15 17 20 12 15 7"/>
-                            <path d="M4 18v-2a4 4 0 0 1 4-4h12"/>
-                        </svg>
-                    </span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-forward">
+                                <polyline points="15 17 20 12 15 7"/>
+                                <path d="M4 18v-2a4 4 0 0 1 4-4h12"/>
+                            </svg>
+                        </span>
                     <span class="metadata-text">aliases</span>
                 </div>
                 <div class="metadata-property-value">
@@ -143,31 +140,50 @@ class PerliteParsedown extends Parsedown
                 }
                 $yamlText .= '</div></div></div>';
             }
-	# Check for properties
-	    if (count($parsed) > 0){
-		foreach ($parsed as $property => $value){
-			$yamlText .= '<div class="metadata-property" tabindex="0" data-property-key="tags" data-property-type="multitext">';
-			$yamlText .=   
-				'<div class="metadata-property-key">                		
-					<span class="metadata-text">'. $property .'</span>
-           			</div>';
-			if(str_contains($value, 'youtu')){
-				$yamlText .= 
-					'<div class="metadata-property-value">
-			                	<div class="multi-select-container">	
-							<div class="multi-select-pill multi-select-pill-content">
-								<a target="_blank" href="'. $value .'">'.$value.'</a></div>';				
-			} else {
-				$yamlText .= 
-					'<div class="metadata-property-value">
-			                	<div class="multi-select-container">	
-							<div class="multi-select-pill multi-select-pill-content">' . $value . '</div>';				
-			}
 
-			$yamlText .= '</div></div></div>';
-		}
+            if (count($parsed) > 0){
+                /*
+                $yamlText .= '
+                <div class="metadata-property" tabindex="0" data-property-key="tags" data-property-type="multitext">
+                
+                <div class="metadata-property-key">';
+                foreach($parsed as $key => $vals){
+                    if ($key == "aliases" || $key == "tags"){
+                        continue;
+                    }
+                    $yamlText .= '<span class="metadata-text">'. $key .'</span>';
+                }
 
-	    }
+                $yamlText .= '</div>
+                    <div class="metadata-property-value">
+                    <div class="multi-select-container">';
+                foreach ($parsed as $key => $vals) {
+                    if ($key == "aliases" || $key == "tags"){
+                        continue;
+                    }
+                    $yamlText .= '<div class="multi-select-pill multi-select-pill-content">' . $vals . '</div>';
+                }
+                $yamlText .= '</div></div></div>'; */
+                foreach($parsed as $key => $vals){
+                    if ($key == "aliases" || $key == "tags"){
+                        continue;
+                    }
+                    $yamlText .= '
+                    <div class="metadata-property" tabindex="0" data-property-key="tags" data-property-type="multitext">
+                    <div class="metadata-property-key">
+                        <span class="metadata-text">'. $key .'</span>
+                    </div>
+                    <div class="metadata-property-value">
+                        <div class="multi-select-container">
+                            <div class="multi-select-pill multi-select-pill-content">' . $vals . '</div>
+                        </div>
+                    </div>
+                    </div>
+                    ';
+                }
+            }
+
+
             $yamlText .= '</div></div></div></div></div>';
             return $yamlText;
         }
@@ -209,12 +225,10 @@ class PerliteParsedown extends Parsedown
                 $isCollapsed = '';
                 $needCollapseIcon = False;
                 $isCollapsedIcon = '';
-                $calloutTitleClass = 'callout-title-inner';
 
                 if (substr($calloutTitle, 0, 1) == '+') {
                     $calloutTitle = substr($calloutTitle, 1);
                     $calloutclass = 'callout is-collapsible';
-                    $calloutTitleClass = 'callout-title-inner is-collapsible';
                     $calloutStyle = 'unset';
                     $needCollapseIcon = True;
                 }
@@ -225,7 +239,6 @@ class PerliteParsedown extends Parsedown
                     $calloutStyle = 'none';
                     $isCollapsed = 'is-collapsed-callout';
                     $isCollapsedIcon = 'is-collapsed';
-                    $calloutTitleClass = 'callout-title-inner is-collapsed';
                     $needCollapseIcon = True;
                 }
 
@@ -298,9 +311,8 @@ class PerliteParsedown extends Parsedown
                                     # callout title
                                     array(
                                         'name' => 'div',
-                                        'attributes' => array('class' => $calloutTitleClass),
-                                        'text' => (array) $calloutTitle,
-                                        'handler' => 'lines',
+                                        'attributes' => array('class' => 'callout-title-inner'),
+                                        'text' => $calloutTitle,
 
                                     ),
                                     # collapsible icon
@@ -509,55 +521,8 @@ class PerliteParsedown extends Parsedown
         }
     }
 
-    protected function blockYouTube($Line)
-    {
-
-        if ( ! isset($Line['text'][1]) or $Line['text'][1] !== '[')
-        {
-            return;
-        }
-
-        $Line['text']= substr($Line['text'], 1);
-
-        $Link = $this->inlineLink($Line);
-
-
-        if ($Link === null)
-        {
-            return;
-        }
-
-        // See: https://stackoverflow.com/a/64320469
-        $yt = preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i', $Link['element']['attributes']['href'], $match);
-
-        if (! $yt)
-        {
-            return;
-        }
-
-        $youtubeId = $match[1];
-        $Block = array(
-            'element' => array(
-                'name' => 'iframe',
-                'text' => $Line['text'],
-                'handler' => 'line',
-
-                'attributes' => array(
-                    'class'  => 'external-embed mod-receives-events', 'sandbox' => 'allow-forms allow-presentation allow-same-origin allow-scripts allow-modals allow-popups',
-                    'allow' => 'fullscreen',
-                    'frameborder' => '0',
-                    'src' => 'https://www.youtube.com/embed/'. $youtubeId,
-                ),
-
-            ),
-        );
-
-        return $Block;
-    }
-
-
     # extend to obsidian tags
-    protected $inlineMarkerList = '!"*$_#&[:<>`~\\=';
+    protected $inlineMarkerList = '!"*$_#&[:<>`~\\';
     protected $InlineTypes = array(
         '"' => array('SpecialCharacter'),
         '!' => array('Image'),
@@ -573,58 +538,33 @@ class PerliteParsedown extends Parsedown
         '`' => array('Code'),
         '~' => array('Strikethrough'),
         '\\' => array('EscapeSequence'),
-        '=' => array('Highlight'),
     );
-
-
-
-    # handle highlight code
-    protected function inlineHighlight($Excerpt)
-    {
-        $marker = $Excerpt['text'][1];
-
-        if (preg_match('/^==(.+?)==/s', $Excerpt['text'], $matches))
-        {
-            $content = $matches[1];
-            $Inline = array(
-                'extent' => strlen($matches[0]),
-                'element' => array(
-                    'name' => 'span',
-                    'text' => $content,
-                    'attributes' => array(
-                        'class' => 'cm-highlight'
-                    ),
-                ),
-            );
-
-            return $Inline;
-        }
-    }
-
-
 
 
     # handle katex code
     protected function inlineKatex($Excerpt)
     {
-        $marker = $Excerpt['text'][0];
-        if (preg_match('/^(\\'.$marker.'+)[ ]*(.+?)[ ]*(?<!\\'.$marker.')\1(?!\\'.$marker.')/s', $Excerpt['text'], $matches))
-        {
-            $text = $matches[0];
-            $text = preg_replace("/[ ]*\n/", ' ', $text);
+        $katex = $Excerpt['text'];
 
-            $name = 'katex';
-            if ($matches[1] === '$') {
-                $name = 'katex-inline';
-            }
-            return array(
-                'extent' => strlen($matches[0]),
-                'element' => array(
-                    'name' => $name,
-                    'text' => $text,
-                ),
-            );
+        if (preg_match("/(\\$\\$[^ ].*?\\$\\$)/", $Excerpt['text'], $matches)) {
+
+            $katex = $matches[0];
+
+        } else if (preg_match("/(\\$[^ ].*?\\$)/", $Excerpt['text'], $matches)) {
+
+            $katex = $matches[0];
+
+        } else {
+            return;
         }
+
+        return array(
+            'extent' => strlen($katex),
+            'element' => array(
+                'name' => 'katex',
+                'text' => $katex,
+            ),
+        );
     }
 
     # handle obsidian tags
@@ -660,210 +600,6 @@ class PerliteParsedown extends Parsedown
             );
 
             return $Inline;
-        }
-    }
-
-    protected function blockList($Line)
-    {
-        list($name, $pattern) = $Line['text'][0] <= '-' ? array('ul', '[*+-]') : array('ol', '[0-9]+[.]');
-
-        
-        
-        if (preg_match('/(- \[(x| )\])(.*)/', $Line['text'], $matches)) {
-
-            $text = isset($matches[3]) ? $matches[3] : '';
-            $isActive = $matches[2];
-            $checked = '';
-            if ($isActive === 'x') {
-                $checked = 'checked';
-            }
-
-   
-
-            $Block = array(
-                'element' => array(
-                    'name' => 'div',
-                        'elements' => array(
-                            array(
-                            'name' => 'div',
-                            'attributes' => array(
-                                'class' => 'HyperMD-list-line HyperMD-list-line-1 HyperMD-task-line cm-line',
-                                'data-task' => $isActive,
-                                ),
-                            ),
-                            array(
-                                'name' => 'label',
-                                'attributes' => array('class' => 'task-list-label'),
-                                'elements' => array(
-                                    array(
-                                        'name' => 'input',
-                                        'attributes' => array(
-                                            'class' => 'task-list-item-checkbox',
-                                            'type' => 'checkbox',
-                                            'data-task' => $isActive,
-                                            $checked => '',
-                                        ),
-                                    ),
-                                    array(
-                                        'name' => 'label',
-                                        'attributes' => array('class' => 'cm-widgetBuffer'),
-                                        'text' => $text,
-                                    ),
-                                ),
-                            ),                       
-                    ),
-                ),
-            );
-            
-            
-            return $Block;
-        }
-
-        if (preg_match('/^('.$pattern.'[ ]+)(.*)/', $Line['text'], $matches))
-        {
-            $Block = array(
-                'indent' => $Line['indent'],
-                'pattern' => $pattern,
-                'element' => array(
-                    'name' => $name,
-                    'handler' => 'elements',
-                ),
-            );
-
-            if($name === 'ol')
-            {
-                $listStart = stristr($matches[0], '.', true);
-
-                if($listStart !== '1')
-                {
-                    $Block['element']['attributes'] = array('start' => $listStart);
-                }
-            }
-
-            $Block['li'] = array(
-                'name' => 'li',
-                'handler' => 'li',
-                'text' => array(
-                    $matches[2],
-                ),
-            );
-
-            $Block['element']['text'] []= & $Block['li'];
-
-            return $Block;
-        }
-    }
-
-    protected function blockListContinue($Line, array $Block)
-    {
-        
-        
-        if (preg_match('/(- \[(x| )\])(.*)/', $Line['text'], $matches)) {
-
-            $text = isset($matches[3]) ? $matches[3] : '';
-            $isActive = $matches[2];
-
-            $checked = '';
-            if ($isActive === 'x') {
-                $checked = 'checked';
-            }
-
-
-
-           
-    
-            $conBlock = array(
-                    'name' => 'div',
-                    'attributes' => array(
-                        'class' => 'HyperMD-list-line HyperMD-list-line-1 HyperMD-task-line cm-line',
-                        'data-task' => $isActive,
-                    ),
-                    'elements' => array(
-                        array(
-                            'name' => 'label',
-                            'attributes' => array('class' => 'task-list-label'),
-                            'elements' => array(
-                                array(
-                                    'name' => 'input',
-                                    'attributes' => array(
-                                        'class' => 'task-list-item-checkbox',
-                                        'type' => 'checkbox',
-                                        'data-task' => $isActive,
-                                        $checked => '',
-                                    ),
-                                ),
-                                array(
-                                    'name' => 'label',
-                                    'attributes' => array('class' => 'cm-widgetBuffer'),
-                                    'text' => $text,
-                                ),
-                            ),
-                        ),
-                    )       
-            );
-         
-            
-            $Block['element']['elements'][ ] = & $conBlock;
-            
-            return $Block;
-        }
-
-        $Block['indent'] = isset($Block['indent']) ? $Block['indent'] : '0';
-
-        if ($Block['indent'] === $Line['indent'] and preg_match('/^'.$Block['pattern'].'(?:[ ]+(.*)|$)/', $Line['text'], $matches))
-        {
-                      
-            if (isset($Block['interrupted']))
-            {
-                $Block['li']['text'] []= '';
-
-                $Block['loose'] = true;
-
-                unset($Block['interrupted']);
-            }
-
-            unset($Block['li']);
-
-            $text = isset($matches[1]) ? $matches[1] : '';
-
-            $Block['li'] = array(
-                'name' => 'li',
-                'handler' => 'li',
-                'text' => array(
-                    $text,
-                ),
-            );
-
-            $Block['element']['text'] []= & $Block['li'];
-
-            return $Block;
-        }
-
-        if ($Line['text'][0] === '[' and $this->blockReference($Line))
-        {
-            return $Block;
-        }
-
-        if ( ! isset($Block['interrupted']))
-        {
-            $text = preg_replace('/^[ ]{0,4}/', '', $Line['body']);
-
-            $Block['li']['text'] []= $text;
-
-            return $Block;
-        }
-
-        if ($Line['indent'] > 0)
-        {
-            $Block['li']['text'] []= '';
-
-            $text = preg_replace('/^[ ]{0,4}/', '', $Line['body']);
-
-            $Block['li']['text'] []= $text;
-
-            unset($Block['interrupted']);
-
-            return $Block;
         }
     }
 
@@ -1043,7 +779,7 @@ class PerliteParsedown extends Parsedown
                 unset($parts[0]);
 
                 foreach ($parts as $part) {
-                    $shortage = 4 - strlen(utf8_decode($input)) % 4;
+                    $shortage = 4 - mb_strlen($line, 'utf-8') % 4;
 
                     $line .= str_repeat(' ', $shortage);
                     $line .= $part;
